@@ -98,6 +98,14 @@
          "match": "\\)[ \\t]+(→[ \\t]+(?:\\[(?:[^,\\]]+,[ \\t]*)+[[A-Za-z0-9_]_]+\\]|(?:[A-Za-z0-9_]+\\.[A-Za-z0-9_]+)|(?:(?!void|na)[[A-Za-z0-9_].><\\[\\]]+)))$",
          "captures": { "1": { "name": "keyword.type" } }
       },
+      {
+         "comment": "Pine Script v6 text formatting constants",
+         "match": "\\b(text)\\.(format_bold|format_italic)\\b",
+         "captures": {
+            "1": { "name": "entity.name.type" },
+            "2": { "name": "constant.language" }
+         }
+      },
       { "include": "#colors" },
       { "include": "#keywords" },
       { "include": "#operators" },
@@ -111,7 +119,7 @@
       "script": {
          "patterns": [
             {
-               "match": "^(\/\/)(@)(version)(=)(\\d+)",
+               "match": "^(\/\/)(@)(version)(=)([456])",
                "captures": {
                   "1": { "name": "comment.line" },
                   "2": { "name": "entity.name.tag" },

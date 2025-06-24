@@ -1,0 +1,114 @@
+//@version=6
+indicator("Extension Functionality Test", overlay=true)
+
+// ============================================
+// SYNTAX HIGHLIGHTING TEST
+// ============================================
+
+// Test 1: Version recognition (should highlight v6)
+// Test 2: Annotations
+// @description This tests the extension's annotation support
+// @param testParam Test parameter
+// @returns Test return value
+
+// Test 3: Import statements
+import TradingView/Patterns/1 as p
+
+// Test 4: Function declarations
+testFunction(int param1, float param2) =>
+    result = param1 + param2
+    result
+
+// Test 5: Variables and types
+var int myInt = 10
+var float myFloat = 3.14
+var bool myBool = true
+var string myString = "test"
+var color myColor = color.blue
+
+// Test 6: Arrays and collections
+myArray = array.new<float>()
+myMatrix = matrix.new<int>()
+myMap = map.new<string, float>()
+
+// ============================================
+// V6 SPECIFIC FEATURES TEST
+// ============================================
+
+// Test 7: Dynamic requests (v6 feature)
+dynamicSymbol = "AAPL"
+dynamicTimeframe = "1D"
+price = request.security(dynamicSymbol, dynamicTimeframe, close)
+
+// Test 8: Text formatting (v6 features)
+if barstate.islast
+    label.new(bar_index, high, "Bold", 
+              text_size = 16,
+              text_formatting = text.format_bold)
+    
+    label.new(bar_index, low, "Italic", 
+              text_size = 14,
+              text_formatting = text.format_italic)
+
+// Test 9: Negative array indices (v6 feature)
+if array.size(myArray) > 2
+    lastElement = array.get(myArray, -1)
+    secondLast = array.get(myArray, -2)
+
+// Test 10: Boolean short-circuit evaluation (v6 optimization)
+if array.size(myArray) > 0 and array.first(myArray) > 0
+    log.info("Safe evaluation")
+
+// ============================================
+// CODE COMPLETION TEST AREAS
+// ============================================
+
+// Test 11: Math namespace completion
+mathTest = math.abs(-5)
+mathPi = math.pi
+
+// Test 12: Array methods completion
+array.push(myArray, 1.0)
+arraySize = array.size(myArray)
+
+// Test 13: Color functions completion
+dynamicColor = color.new(color.red, 50)
+rgbColor = color.rgb(255, 0, 0)
+
+// Test 14: Request functions completion
+securityData = request.security(syminfo.tickerid, "1H", close)
+
+// Test 15: Strategy functions (for hover documentation)
+// strategy.entry("Long", strategy.long)
+
+// Test 16: Technical analysis functions
+emaValue = ta.ema(close, 20)
+smaValue = ta.sma(close, 50)
+
+// Test 17: String functions
+stringFormatted = str.format("Price: {0}", close)
+stringConverted = str.tostring(close)
+
+// ============================================
+// HOVER DOCUMENTATION TEST
+// ============================================
+
+// Hover over these functions to test documentation:
+// - close (built-in variable)
+// - high (built-in variable)
+// - barstate.islast (built-in constant)
+// - math.abs (namespace function)
+// - array.new (constructor)
+// - label.new (constructor)
+
+// ============================================
+// FUNCTION SIGNATURE TEST
+// ============================================
+
+// Type these function calls and check parameter hints:
+// label.new(
+// box.new(
+// line.new(
+// request.security(
+
+plot(close, title="Close Price", color=color.blue) 

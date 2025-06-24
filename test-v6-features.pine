@@ -1,0 +1,52 @@
+//@version=6
+indicator("Pine Script v6 Test Features", overlay=true)
+
+// Test 1: Dynamic Requests (v6 Feature)
+symbols = array.from("AAPL", "GOOGL", "MSFT")
+
+for symbol in symbols
+    // Dynamic symbol requests - now possible in v6!
+    price = request.security(symbol, "1D", close)
+    log.info("Price for " + symbol + ": " + str.tostring(price))
+
+// Test 2: Enhanced Text Features (v6 Feature)
+if barstate.islast
+    // Use exact point sizes for text
+    label.new(bar_index, high, "Bold Text", 
+              text_size = 16,  // Exact points instead of size.large
+              text_formatting = text.format_bold)
+    
+    label.new(bar_index, low, "Italic Text", 
+              text_size = 14, 
+              text_formatting = text.format_italic)
+    
+    // Combined formatting
+    label.new(bar_index, (high + low) / 2, "Bold & Italic", 
+              text_size = 18,
+              text_formatting = text.format_bold + text.format_italic)
+
+// Test 3: Boolean Optimizations with Short-circuit Evaluation (v6 Feature)
+myArray = array.new<float>()
+
+if close > open
+    array.push(myArray, close)
+
+// Short-circuit evaluation - more efficient in v6!
+if array.size(myArray) > 0 and array.first(myArray) > 0
+    // array.first() only evaluated if size > 0
+    label.new(bar_index, high * 1.01, "Safe Array Access!")
+
+// Test 4: Negative Array Indices (v6 Feature)
+if array.size(myArray) >= 2
+    // Access last element with negative index
+    lastValue = array.get(myArray, -1)      // Last element
+    secondLast = array.get(myArray, -2)     // Second to last
+    
+    if lastValue > secondLast
+        label.new(bar_index, low * 0.99, "Upward trend detected")
+
+// Test 5: Strategy Order Trimming (v6 Feature)
+// In v6, strategies no longer error at 9000 trades
+// They automatically trim oldest orders instead
+
+plot(close) 
