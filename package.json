@@ -5,7 +5,7 @@
   "description": "Pine Script v6 Language Server with Dynamic Requests, Enhanced Text Features, and Boolean Optimizations",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/Pine-Script-v6-VS-Code"
+    "url": "https://github.com/tradesdontlie/pine-script-v6-extension"
   },
   "version": "0.1.0",
   "type": "commonjs",
