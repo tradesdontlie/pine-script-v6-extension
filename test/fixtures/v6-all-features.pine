@@ -1,0 +1,20 @@
+//@version=6
+indicator("V6 All Features", overlay=true)
+symbols = array.from("AAPL", "MSFT", "GOOGL")
+for sym in symbols
+    c = request.security(sym, timeframe.period, close)
+if barstate.islast
+    lbl = label.new(bar_index, high, "Test", text_size=16, text_formatting=text.format_bold)
+a = array.new<float>(0)
+if a.size() > 0 and a.first() > 0
+    log.info("safe access")
+prices = array.from(1.0, 2.0, 3.0)
+lastPrice = prices.get(-1)
+log.info("Script loaded")
+log.warning("This is a warning")
+enum Trend
+    up
+    down
+    sideways
+var trend = Trend.sideways
+plot(close, linestyle=plot.linestyle_dashed)

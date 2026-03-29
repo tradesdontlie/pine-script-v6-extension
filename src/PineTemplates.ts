@@ -67,7 +67,7 @@ export class PineTemplates {
     const template = `// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // © ${name}
 
-//@version=5
+//@version=6
 indicator("${scriptName}", overlay = true, max_boxes_count = 500, max_labels_count = 500, max_lines_count = 500)
 
 plot(close)`
@@ -85,7 +85,7 @@ plot(close)`
     const template = `// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // © ${name}
 
-//@version=5
+//@version=6
 strategy("${scriptName}", overlay = true, max_boxes_count = 500, max_labels_count = 500, max_lines_count = 500)
 
 longCondition = ta.crossover(ta.sma(close, 14), ta.sma(close, 28))
@@ -109,7 +109,7 @@ if (shortCondition)
     const template = `// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // © ${name}
 
-//@version=5
+//@version=6
 // @description - add library description here
 library("${scriptName}", overlay = true)
 

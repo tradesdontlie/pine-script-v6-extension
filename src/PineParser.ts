@@ -18,6 +18,14 @@ export class PineParser {
   fieldsPattern: RegExp =
     /^\s+(?:(?:(?:(array|matrix|map)<(?<genericTypes>(?<genericType1>([a-zA-Z_][a-zA-Z_0-9]*\.)?([a-zA-Z_][a-zA-Z_0-9]*)),)?(?<genericType2>([a-zA-Z_][a-zA-Z_0-9]*\.)?([a-zA-Z_][a-zA-Z_0-9]*)))>)|(?<fieldType>([a-zA-Z_][a-zA-Z_0-9]*\.)?([a-zA-Z_][a-zA-Z_0-9]*))((?<isArray>\[\])?)\s+)?(?<fieldName>[a-zA-Z_][a-zA-Z0-9_]*)(?:(?=\s*=\s*)(?:(?<defaultValueSingleQuote>'.*')|(?<defaultValueDoubleQuote>".*")|(?<defaultValueNumber>\d*(\.(\d+[eE]?\d+)?\d*|\d+))|(?<defaultValueColor>#[a-fA-F0-9]{6,8})|(?<defaultValueIdentifier>([a-zA-Z_][a-zA-Z0-9_]*\.)*[a-zA-Z_][a-zA-Z0-9_]*)))?$/gm
 
+  // Enum Definition Pattern
+  enumPattern: RegExp =
+    /(?<exportKeyword>export)?\s*enum\s+(?<enumName>\w+)\n(?<fieldsBlock>(?:[ \t]+[^\n]+\n?)+)/gm
+
+  // Enum Field Pattern
+  enumFieldPattern: RegExp =
+    /^\s+(?<fieldName>\w+)(?:\s*=\s*"(?<fieldTitle>[^"]*)")?/gm
+
   // Function Definition Pattern
   funcPattern: RegExp =
     /(\/\/\s*@f(?:@?.*\n)+?)?(?<exportKeyword>export)?\s*(?<methodKeyword>method)?\s*(?<functionName>\w+)\s*\(\s*(?<parameters>[^\)]+?)\s*\)\s*?=>\s*?(?<body>(?:.*\n+)+?)(?=^\b|^\/\/\s*\@|$)/gm
@@ -156,6 +164,7 @@ export class PineParser {
     }
     this.parseFunctions(documents)
     this.parseTypes(documents)
+    this.parseEnums(documents)
   }
 
   /**
@@ -306,5 +315,41 @@ export class PineParser {
       }
     }
     Class.PineDocsManager.setParsed(parsedTypes, 'fields')
+  }
+
+  /**
+   * Parses enums from the provided documents.
+   * Extracts enum name, fields, and optional string titles using regex.
+   * @param documents - An array of documents to parse, each with a 'script' property.
+   */
+  parseEnums(documents: any[]): any[] {
+    const parsedEnums: any[] = []
+    for (const doc of documents) {
+      const { script, alias } = doc
+      if (typeof script !== 'string') continue
+      const enumMatches = script.matchAll(this.enumPattern)
+      for (const enumMatch of enumMatches) {
+        const { exportKeyword, enumName, fieldsBlock } = enumMatch.groups!
+        const name = (alias ? alias + '.' : '') + enumName
+        const enumBuild: any = {
+          name,
+          originalName: enumName,
+          kind: 'Enum',
+          fields: [],
+          exported: !!exportKeyword,
+        }
+        if (fieldsBlock) {
+          const fieldMatches = fieldsBlock.matchAll(this.enumFieldPattern)
+          for (const fieldMatch of fieldMatches) {
+            const { fieldName, fieldTitle } = fieldMatch.groups!
+            const field: any = { name: fieldName }
+            if (fieldTitle) field.title = fieldTitle
+            enumBuild.fields.push(field)
+          }
+        }
+        parsedEnums.push(enumBuild)
+      }
+    }
+    return parsedEnums
   }
 }

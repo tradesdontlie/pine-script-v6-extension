@@ -504,7 +504,7 @@
             },
             {
                "comment": "built in constants, ie: location.abovebar",
-               "match": "\\b(color|line|label|box|table|linefill|chart\\.point|polyline|adjustment|alert|bar_index|barmerge|barstate|box|chart|close|currency|dayofmonth|dayofweek|display|dividends|earnings|extend|font|format|high|hl2|hlc3|hlcc4|hline|hour|input|label|last_bar_index|last_bar_time|line|linefill|location|log|low|math|minute|month|na|ohlc4|open|order|plot|polyline|position|request|runtime|scale|second|session|shape|size|splits|str|strategy|syminfo|ta|table|text|ticker|time|time_close|time_tradingday|timeframe|timenow|volume|weekofyear|xloc|year|yloc)\\.([A-Za-z][A-Za-z0-9_]*)\\b(?=[ \\t]*[^\\(<\\.])",
+               "match": "\\b(color|line|label|box|table|linefill|chart\\.point|polyline|adjustment|alert|bar_index|barmerge|barstate|box|chart|close|currency|dayofmonth|dayofweek|display|dividends|earnings|extend|font|footprint|format|high|hl2|hlc3|hlcc4|hline|hour|input|label|last_bar_index|last_bar_time|line|linefill|location|log|low|math|minute|month|na|ohlc4|open|order|plot|polyline|position|request|runtime|scale|second|session|shape|size|splits|str|strategy|syminfo|ta|table|text|ticker|time|time_close|time_tradingday|timeframe|timenow|volume|volume_row|weekofyear|xloc|year|yloc)\\.([A-Za-z][A-Za-z0-9_]*)\\b(?=[ \\t]*[^\\(<\\.])",
                "captures": {
                   "1": { "name": "entity.other.inherited-class" },
                   "0": { "name": "constant.language" }
@@ -626,7 +626,7 @@
          "patterns": [
             {
                "comment": "",
-               "match": "\\b(bar_index|last_bar_index|last_bar_time|time|timenow|time_tradingday|time_close|close|high|hl2|hlc3|hlcc4|low|ohlc4|open|volume|abovebar|belowbar)\\b(?=(?![[A-Za-z0-9_]\\(]|[\\-+\/%*:]=))",
+               "match": "\\b(bar_index|last_bar_index|last_bar_time|time|timenow|time_tradingday|time_close|close|high|hl2|hlc3|hlcc4|low|ohlc4|open|volume|abovebar|belowbar|bid|ask)\\b(?=(?![[A-Za-z0-9_]\\(]|[\\-+\/%*:]=))",
                "name": "constant.language"
             },
             {

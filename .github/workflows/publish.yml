@@ -1,0 +1,36 @@
+name: Publish VS Code Extension
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Package extension
+        run: npm run vsce-package
+
+      - name: Publish to Visual Studio Marketplace
+        if: github.event_name == 'release'
+        run: npx vsce publish --packagePath *.vsix
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Upload VSIX as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-vsix
+          path: "*.vsix" 

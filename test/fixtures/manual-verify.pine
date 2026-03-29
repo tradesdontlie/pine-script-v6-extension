@@ -1,0 +1,39 @@
+//@version=6
+indicator("Manual Verification Test")
+
+// === SHOULD FLAG: Array out of bounds ===
+prices = array.from(100.0, 200.0, 300.0)
+bad1 = array.get(prices, 5)          // ERROR: index 5 on size-3 array
+bad2 = prices.get(10)                 // ERROR: index 10 on size-3 array
+bad3 = array.get(prices, -4)         // ERROR: negative index exceeds size
+
+// === SHOULD FLAG: Off-by-one ===
+bad4 = array.get(prices, array.size(prices))  // ERROR: always fails
+
+// === SHOULD BE CLEAN: Valid access ===
+good1 = array.get(prices, 0)
+good2 = array.get(prices, 2)
+good3 = prices.get(-1)               // Valid: last element
+good4 = array.get(prices, array.size(prices) - 1)
+
+// === SHOULD WARN: Unguarded access on empty array ===
+empty = array.new<float>(0)
+bad5 = empty.first()                  // WARNING: may fail if empty
+bad6 = empty.last()                   // WARNING: may fail if empty
+
+// === SHOULD BE CLEAN: Guarded access ===
+if empty.size() > 0
+    safe = empty.first()
+
+// === SHOULD WARN: Loop with unrelated bound ===
+for i = 0 to 100
+    v = array.get(prices, i)         // WARNING: bound not from prices.size()
+
+// === SHOULD BE CLEAN: Loop with array.size bound ===
+for i = 0 to array.size(prices) - 1
+    v = array.get(prices, i)
+
+// === SHOULD WARN: int used as bool (v6 breaking change) ===
+x = 5
+if x
+    label.new(bar_index, close, "test")  // WARNING: use x != 0

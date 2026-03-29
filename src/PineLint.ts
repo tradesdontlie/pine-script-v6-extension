@@ -2,6 +2,7 @@ import { debounce } from 'lodash'
 import * as vscode from 'vscode'
 import { VSCode } from './VSCode'
 import { Class } from './PineClass'
+import { PineStaticAnalyzer } from './PineStaticAnalyzer'
 
 /**
  * PineLint class is responsible for linting Pine Script code.
@@ -82,11 +83,40 @@ export class PineLint {
    */
   static async lintDocument(): Promise<void> {
     if (VSCode.ActivePineFile && !PineLint.initialFlag && (await PineLint.checkVersion())) {
+      // Run local static analysis (instant, no API call)
+      const docText = VSCode.Text ?? ''
+      if (docText) {
+        const analyzer = new PineStaticAnalyzer(docText)
+        const localDiags = analyzer.analyze()
+        PineLint.applyLocalDiagnostics(localDiags)
+      }
+
+      // Run remote lint (async, calls TradingView API)
       const response = await Class.PineRequest.lint()
       if (response) {
         PineLint.handleResponse(response)
         PineLint.format(response)
       }
+    }
+  }
+
+  static applyLocalDiagnostics(localDiags: import('./PineStaticAnalyzer').AnalyzerDiagnostic[]): void {
+    if (localDiags.length === 0) return
+    const vsDiags = localDiags.map(d => {
+      const range = new vscode.Range(d.line - 1, d.column - 1, d.line - 1, d.endColumn - 1)
+      const severity = d.severity === 'error'
+        ? vscode.DiagnosticSeverity.Error
+        : d.severity === 'warning'
+          ? vscode.DiagnosticSeverity.Warning
+          : vscode.DiagnosticSeverity.Information
+      const diag = new vscode.Diagnostic(range, d.message, severity)
+      diag.source = 'pine-static-analyzer'
+      return diag
+    })
+    const uri = VSCode.Uri
+    if (uri) {
+      const existing = PineLint.diagnostics ?? []
+      PineLint.setDiagnostics(uri, [...vsDiags, ...existing])
     }
   }
 
