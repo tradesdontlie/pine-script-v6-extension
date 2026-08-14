@@ -117,7 +117,7 @@ export class PineCompletionProvider implements vscode.CompletionItemProvider {
       const detail = kind ?? ''
       completionItem.detail = detail
 
-      // Use a snippet string for the insert text
+      // Use a snippet string for the insert text with proper cursor placement
       let insertText = label
       const textBeforeCursor = document.lineAt(position.line).text.substring(0, position.character)
 
@@ -142,14 +142,21 @@ export class PineCompletionProvider implements vscode.CompletionItemProvider {
         let wordStart = wordStartMatch ? position.character - wordStartMatch[0].length : position.character
         wordStart = Math.max(wordStart, 0)
 
-        // Set the replacement range and insert text of the completion item
-        completionItem.insertText = insertText
+        // For function/method completions, use snippet syntax to place cursor inside parentheses
+        if (moveCursor) {
+          // Use $0 to place cursor between parentheses: func($0)
+          insertText = name.replace(/\(\)/g, '') + '($0)'
+          completionItem.insertText = new vscode.SnippetString(insertText)
+        } else {
+          completionItem.insertText = insertText
+        }
+        
         completionItem.preselect = preselect
         completionItem.range = new vscode.Range(new vscode.Position(position.line, wordStart), position)
 
         if (moveCursor) {
-          completionItem.command = { command: 'pine.completionAccepted', title: 'Completion Accept Logic.' }
-          moveCursor = false
+          // No longer need cursorLeft command since we use snippet $0
+          completionItem.command = { command: 'editor.action.triggerParameterHints', title: 'Trigger Parameter Hints' }
         }
       }
 

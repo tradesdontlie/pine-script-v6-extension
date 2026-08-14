@@ -104,7 +104,6 @@ export class PineSignatureHelpProvider implements vscode.SignatureHelpProvider {
         const udtMap = Class.PineDocsManager.getMap('UDT', 'types')
         if (udtMap.has(udtName)) {
           isUdtNew = true
-            const udtFunctionName = udtName
         } else {
           udtName = null
         }

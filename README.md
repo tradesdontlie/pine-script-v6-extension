@@ -27,12 +27,12 @@ cursor --install-extension INSTALL-ME.vsix
 ### Option 3: Build from source
 
 ```bash
-git clone https://github.com/TradesDontLie/pinescript-v6-language-server.git
-cd pinescript-v6-language-server
+git clone https://github.com/shubhamtaywade82/pine-script-v6-extension.git
+cd pine-script-v6-extension
 pnpm install
 pnpm run compile
-npx @vscode/vsce package --no-dependencies -o INSTALL-ME.vsix
-code --install-extension INSTALL-ME.vsix
+pnpm run vsce-package
+code --install-extension pinescriptv6.vsix
 ```
 
 ---
@@ -173,7 +173,7 @@ pnpm run compile
 pnpm run start
 
 # Package VSIX
-npx @vscode/vsce package --no-dependencies -o INSTALL-ME.vsix
+pnpm run vsce-package
 ```
 
 ---

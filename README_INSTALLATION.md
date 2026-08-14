@@ -13,7 +13,7 @@ Before you begin, ensure you have the following installed:
 Clone the repository to your local machine using Git:
 
 ```bash
-git clone https://github.com/tradesdontlie/pine-script-v6-extension.git
+git clone https://github.com/shubhamtaywade82/pine-script-v6-extension.git
 cd pine-script-v6-extension
 ```
 
@@ -66,7 +66,7 @@ In VS Code, press `F5` to run the extension in a new Extension Development Host 
 If you want to package the extension into a `.vsix` file:
 
 ```bash
-npx @vscode/vsce package --no-dependencies -o INSTALL-ME.vsix
+pnpm run vsce-package
 ```
 
 This will create a `.vsix` file that you can distribute or install manually using the Extensions view in VS Code.

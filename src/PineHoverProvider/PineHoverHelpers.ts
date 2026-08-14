@@ -12,8 +12,8 @@ export class PineHoverHelpers {
         return input
       }
       return `(${input
-          .replace(/\\/, '')
-          .replace(/[.*+?^${}()\[\]\\]/g, '\\$&')})`
+        .replace(/\\/, '')
+        .replace(/[.*+?^${}()\[\]\\]/g, '\\$&')})`
         .replace(/<type(?:,type)*>/g, (match) => match.replace(/type/g, '[^,>]+'))
         .replace(/for\|for\\\.\\\.\\\.in/, '(for.+in|for)');
     } catch (error) {

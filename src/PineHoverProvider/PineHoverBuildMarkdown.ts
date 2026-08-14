@@ -6,7 +6,7 @@ import { PineStrings } from '../PineStrings'
 
 /** Builds the markdown for the hover provider. */
 export class PineHoverBuildMarkdown {
-  static iconString: string = `\n${Helpers.boldWrap('See Also')}  \n${PineStrings.pineIconSeeAlso} - `
+  static iconString: string = `\n**See Also**  \n${PineStrings.pineIconSeeAlso} - `
 
   /**
    * Builds the markdown for the hover provider.
@@ -454,7 +454,7 @@ export class PineHoverBuildMarkdown {
     try {
       if (keyedDocs?.remarks) {
         if (Array.isArray(keyedDocs.remarks)) {
-          return this.appendDetails(keyedDocs?.remarks?.join('\n') ?? keyedDocs?.remarks ?? '', 'Remarks')
+          return this.appendDetails(keyedDocs.remarks.join('\n'), 'Remarks')
         }
         return this.appendDetails(keyedDocs.remarks, 'Remarks')
       }

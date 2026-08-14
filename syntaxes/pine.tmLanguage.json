@@ -100,7 +100,7 @@
       },
       {
          "comment": "Pine Script v6 text formatting constants",
-         "match": "\\b(text)\\.(format_bold|format_italic)\\b",
+         "match": "\\b(text)\\.(format_bold|format_italic|format_none)\\b",
          "captures": {
             "1": { "name": "entity.name.type" },
             "2": { "name": "constant.language" }
@@ -400,6 +400,58 @@
          "patterns": [
             {
                "patterns": [
+                  {
+                     "begin": "\"\"\"",
+                     "end": "\"\"\"",
+                     "name": "string.quoted.triple.double.pine",
+                     "beginCaptures": {
+                        "0": { "name": "punctuation.definition.string.begin.pine" }
+                     },
+                     "endCaptures": {
+                        "0": { "name": "punctuation.definition.string.end.pine" }
+                     },
+                     "patterns": [
+                        {
+                           "match": "\\\\.",
+                           "name": "constant.character.escape"
+                        },
+                        {
+                           "comment": "will leave text/numbers in curly braces inside of a string a different highlight than string",
+                           "match": "(\\{)([^}]*)(\\})",
+                           "captures": {
+                              "1": { "name": "punctuation.section.embedded.begin" },
+                              "2": { "name": "variable.other" },
+                              "3": { "name": "punctuation.section.embedded.end" }
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "begin": "'''",
+                     "end": "'''",
+                     "name": "string.quoted.triple.single.pine",
+                     "beginCaptures": {
+                        "0": { "name": "punctuation.definition.string.begin.pine" }
+                     },
+                     "endCaptures": {
+                        "0": { "name": "punctuation.definition.string.end.pine" }
+                     },
+                     "patterns": [
+                        {
+                           "match": "\\\\.",
+                           "name": "constant.character.escape"
+                        },
+                        {
+                           "comment": "will leave text/numbers in curly braces inside of a string a different highlight than string",
+                           "match": "(\\{)([^}]*)(\\})",
+                           "captures": {
+                              "1": { "name": "punctuation.section.embedded.begin" },
+                              "2": { "name": "variable.other" },
+                              "3": { "name": "punctuation.section.embedded.end" }
+                           }
+                        }
+                     ]
+                  },
                   {
                      "match": "(\")([^\"\\\\\\n]*(?:\\\\.[^\"\\\\\\n]*)*)(\")",
                      "name": "string.quoted.double",

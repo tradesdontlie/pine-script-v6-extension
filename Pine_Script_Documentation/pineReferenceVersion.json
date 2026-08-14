@@ -1,0 +1,13 @@
+{
+  "version": "6.0.0",
+  "lastSynchronized": "2026-08-14T06:27:12.890Z",
+  "totalSymbols": 959,
+  "languageFeatures": {
+    "multilineStrings": true,
+    "udtSorting": true,
+    "udtBinarySearch": true,
+    "calcOnEveryHistoryTick": true,
+    "negativeIndexing": true,
+    "shortCircuit": true
+  }
+}

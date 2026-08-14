@@ -18,8 +18,20 @@ export class VSCode {
   public static getContext(): vscode.ExtensionContext {
     if (VSCode.context !== undefined) {
       return VSCode.context
-    } else if (VSCode.recursiveCount++ < 3) {
-      setTimeout(() => VSCode.getContext(), 1000)
+    }
+    // If context is not set yet, return undefined
+    // The caller should handle this case or wait for activation
+    return VSCode.context
+  }
+
+  public static async getContextAsync(maxRetries: number = 3, delayMs: number = 1000): Promise<vscode.ExtensionContext | undefined> {
+    let retries = 0
+    while (retries < maxRetries) {
+      if (VSCode.context !== undefined) {
+        return VSCode.context
+      }
+      await new Promise(resolve => setTimeout(resolve, delayMs))
+      retries++
     }
     return VSCode.context
   }

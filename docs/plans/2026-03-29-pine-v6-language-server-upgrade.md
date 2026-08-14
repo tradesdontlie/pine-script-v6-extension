@@ -20,7 +20,7 @@
 **Step 1: Install vitest and testing utilities**
 
 ```bash
-cd "/Users/tradesdontlie/Tradingview VSXIX/pine-script-v6-extension"
+cd "pine-script-v6-extension"
 pnpm add -D vitest @vitest/coverage-v8
 ```
 

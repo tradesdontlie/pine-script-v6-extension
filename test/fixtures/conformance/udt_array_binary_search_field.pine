@@ -1,0 +1,10 @@
+//@version=6
+indicator("UDT Binary Search Test")
+type Block
+    float val
+
+var array<Block> blocks = array.new<Block>()
+Block target = Block.new(100.0)
+int idx = array.binary_search(blocks, target, sort_field = "val")
+int left = array.binary_search_leftmost(blocks, target, sort_field = 0)
+int right = array.binary_search_rightmost(blocks, target, sort_field = "val")

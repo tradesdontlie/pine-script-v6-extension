@@ -5,11 +5,17 @@ import { PineResponseFlow } from './PineFormatResponse'
 import { PineTypify } from './index'
 import { PineLint } from './PineLint'
 import { checkForNewVersionAndShowChangelog } from './newVersionPopUp'
+import { PineAgentController } from './agent/PineAgentController'
 import * as vscode from 'vscode'
 
 export function deactivate() {
   PineLint.versionClear()
   PineLint.handleDocumentChange()
+  // Clear the interval timer to prevent memory leak
+  if (globalThis.__pineCheckInterval) {
+    clearInterval(globalThis.__pineCheckInterval)
+    globalThis.__pineCheckInterval = undefined
+  }
   return undefined
 }
 
@@ -25,7 +31,8 @@ function checkForChange() {
   }
 }
 
-setInterval(checkForChange, 5000)
+// Store interval ID for cleanup on deactivate
+globalThis.__pineCheckInterval = setInterval(checkForChange, 5000)
 
 // Activate Function =============================================
 export async function activate(context: vscode.ExtensionContext) {
@@ -38,6 +45,9 @@ export async function activate(context: vscode.ExtensionContext) {
   VSCode.setContext(context)
   Class.setContext(context)
   PineLint.initialLint()
+
+  // Initialize PineForge AI Agent Controller
+  PineAgentController.getInstance().initialize(context)
 
   // Push subscriptions to context
   context.subscriptions.push(

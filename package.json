@@ -1,12 +1,17 @@
 {
   "name": "pinescript-v6-vscode",
-  "publisher": "TradesDontLie",
+  "publisher": "shubhamtaywade82",
   "displayName": "Pine Script v6",
-  "description": "Pine Script v6 Language Server with Dynamic Requests, Enhanced Text Features, and Boolean Optimizations",
+  "description": "Pine Script v6 Language Server with Dynamic Requests, Enhanced Text Features, Boolean Optimizations, and PineForge AI Assistant",
+  "author": "Shubham Taywade <shubhamtaywade82@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tradesdontlie/pine-script-v6-extension"
+    "url": "https://github.com/shubhamtaywade82/pine-script-v6-extension"
   },
+  "bugs": {
+    "url": "https://github.com/shubhamtaywade82/pine-script-v6-extension/issues"
+  },
+  "homepage": "https://github.com/shubhamtaywade82/pine-script-v6-extension#readme",
   "version": "0.1.0",
   "type": "commonjs",
   "engines": {
@@ -40,15 +45,20 @@
     "webpack": "webpack --devtool source-map --mode development",
     "compile": "pnpm run webpack",
     "start": "pnpm run compile && code --extensionDevelopmentPath=.",
-    "build-docs": "pnpm run typedoc --name 'Pine Script v5'",
+    "build-docs": "pnpm run typedoc --name 'Pine Script v6'",
     "vscode:prepublish": "pnpm run compile",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "compile-tests": "pnpm run tsc -p . --outDir out",
     "watch-tests": "pnpm run tsc -p . -w --outDir out",
-    "lint": "pnpm run eslint src --ext ts",
-    "vsce-package": "vsce package -o pinescriptv5.vsix"
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "type-check": "tsc --noEmit -p tsconfig.json",
+    "pine:conformance": "vitest run test/conformance/",
+    "pine:sync": "vitest run test/conformance/PineConformanceEngine.test.ts",
+    "vsce-package": "vsce package --no-dependencies -o pinescriptv6.vsix",
+    "package": "vsce package --no-dependencies -o pinescriptv6.vsix"
   },
   "main": "./dist/extension.js",
   "contributes": {
@@ -174,18 +184,120 @@
         "path": "themes/Pine-Light#02.json"
       }
     ],
-    "configuration": {},
+    "configuration": {
+      "title": "PineForge AI Agent",
+      "properties": {
+        "pineForge.ollama.host": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "URL of the local Ollama instance"
+        },
+        "pineForge.ollama.model": {
+          "type": "string",
+          "default": "qwen2.5-coder:7b",
+          "description": "Default Ollama model to use for PineForge AI Agent"
+        },
+        "pineForge.agent.maxIterations": {
+          "type": "number",
+          "default": 12,
+          "description": "Maximum iterations per agent loop"
+        },
+        "pineForge.agent.autoRepair": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically attempt to repair validation failures"
+        }
+      }
+    },
+    "chatParticipants": [
+      {
+        "id": "pine-script-v6.agent",
+        "name": "pine",
+        "fullName": "PineForge AI (Pine Script v6)",
+        "description": "Pine Script v6 engineering agent grounded in official reference documentation and conformance engine.",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "explain",
+            "description": "Explain the selected Pine Script v6 code or concept"
+          },
+          {
+            "name": "fix",
+            "description": "Diagnose and fix syntax or runtime issues in active script"
+          },
+          {
+            "name": "build",
+            "description": "Build a new indicator or strategy with PineForge"
+          },
+          {
+            "name": "refactor",
+            "description": "Optimize calculations, memory, and code structure"
+          },
+          {
+            "name": "optimize",
+            "description": "Apply calculation caching and HTF tuple consolidation"
+          },
+          {
+            "name": "migrate",
+            "description": "Migrate Pine Script v5 to v6"
+          },
+          {
+            "name": "validate",
+            "description": "Run full Pine v6 conformance validation"
+          },
+          {
+            "name": "docs",
+            "description": "Lookup Pine Script v6 reference documentation"
+          }
+        ]
+      }
+    ],
     "submenus": [
       {
         "id": "pine.mysubmenuNonPineFile",
-        "label": " Pine Script v5"
+        "label": " Pine Script v6"
       },
       {
         "id": "pine.mysubmenu2",
-        "label": " Pine Script v5"
+        "label": " Pine Script v6"
       }
     ],
     "commands": [
+      {
+        "command": "pineforge.showStatusDetails",
+        "title": "PineForge: Show Status Panel",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.selectModel",
+        "title": "PineForge: Select Ollama Model",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.askAgent",
+        "title": "PineForge: Ask AI Agent",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.generateCode",
+        "title": "PineForge: Generate Indicator/Strategy (AI)",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.debugCode",
+        "title": "PineForge: Diagnose & Fix Script (AI)",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.migrateCode",
+        "title": "PineForge: Migrate v5 to v6 (AI)",
+        "category": "PineForge"
+      },
+      {
+        "command": "pineforge.validateCode",
+        "title": "PineForge: Validate Active Pine Script",
+        "category": "PineForge"
+      },
       {
         "command": "pine.mysubmenuNonPineFile",
         "title": "Pine Script Options",
@@ -344,14 +456,8 @@
       }
     ]
   },
-  "dependencies": {
-    "debounce": "^2.1.1",
-    "lodash": "^4.17.21",
-    "node-fetch": "^3.3.2"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/debounce": "^1.2.4",
-    "@types/lodash": "^4.17.7",
     "@types/node": "^22.5.4",
     "@types/source-map-support": "^0.5.10",
     "@types/vscode": "^1.93.0",
@@ -366,16 +472,13 @@
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-react": "^7.35.2",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "nodemon": "^3.1.4",
-    "remark-preset-wooorm": "^9.0.0",
+    "ovsx": "^0.8.3",
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.5.1",
-    "type-coverage": "^2.0.0",
     "typedoc": "^0.28.0",
     "typescript": "^5.7.3",
     "vitest": "^4.1.2",
     "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4",
-    "xo": "^0.54.0"
+    "webpack-cli": "^5.1.4"
   }
 }

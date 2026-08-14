@@ -23,7 +23,7 @@ export class PineStaticAnalyzer {
   }
 
   analyze(): AnalyzerDiagnostic[] {
-    if (!this.isV6()) return []
+    if (!this.isV6()) {return []}
 
     const diagnostics: AnalyzerDiagnostic[] = []
 
@@ -39,10 +39,10 @@ export class PineStaticAnalyzer {
   private isV6(): boolean {
     for (const line of this.lines) {
       const trimmed = line.trim()
-      if (trimmed.startsWith('//@version=6')) return true
-      if (trimmed.startsWith('//@version=')) return false
+      if (trimmed.startsWith('//@version=6')) {return true}
+      if (trimmed.startsWith('//@version=')) {return false}
       // Skip blank lines and comments at top
-      if (trimmed === '' || trimmed.startsWith('//')) continue
+      if (trimmed === '' || trimmed.startsWith('//')) {continue}
       break
     }
     return false
@@ -86,16 +86,15 @@ export class PineStaticAnalyzer {
       for (const pattern of funcPatterns) {
         let match
         while ((match = pattern.exec(line)) !== null) {
-          const method = match[1]
           const arrName = match[2]
           const idx = parseInt(match[3], 10)
           const info = this.arrays.get(arrName)
-          if (!info || info.size === null) continue
+          if (!info || info.size === null) {continue}
 
           const col = match.index + 1
           const endCol = col + match[0].length
-          const diag = this.checkIndexBounds(info, idx, i + 1, col, endCol, `array.${method}`)
-          if (diag) diagnostics.push(diag)
+          const diag = this.checkIndexBounds(info, idx, i + 1, col, endCol)
+          if (diag) {diagnostics.push(diag)}
         }
       }
 
@@ -110,7 +109,7 @@ export class PineStaticAnalyzer {
         if (arrName === sizeArrName) {
           // Check what follows — if "- 1" comes next, it's valid
           const afterMatch = line.slice(match.index + match[0].length)
-          if (/^\s*-\s*1/.test(afterMatch)) continue
+          if (/^\s*-\s*1/.test(afterMatch)) {continue}
 
           diagnostics.push({
             line: i + 1,
@@ -126,17 +125,16 @@ export class PineStaticAnalyzer {
       const methodPattern = /(\w+)\.(get|set)\(\s*(-?\d+)/g
       while ((match = methodPattern.exec(line)) !== null) {
         const arrName = match[1]
-        const method = match[2]
         const idx = parseInt(match[3], 10)
         // Skip if this looks like array.get (function syntax already handled above)
-        if (arrName === 'array') continue
+        if (arrName === 'array') {continue}
         const info = this.arrays.get(arrName)
-        if (!info || info.size === null) continue
+        if (!info || info.size === null) {continue}
 
         const col = match.index + 1
         const endCol = col + match[0].length
-        const diag = this.checkIndexBounds(info, idx, i + 1, col, endCol, `.${method}`)
-        if (diag) diagnostics.push(diag)
+        const diag = this.checkIndexBounds(info, idx, i + 1, col, endCol)
+        if (diag) {diagnostics.push(diag)}
       }
 
       // Method syntax off-by-one: a.get(a.size())
@@ -145,7 +143,7 @@ export class PineStaticAnalyzer {
         const arrName = match[1]
         const method = match[2]
         const sizeObj = match[3]
-        if (arrName === 'array') continue
+        if (arrName === 'array') {continue}
         if (arrName === sizeObj && this.arrays.has(arrName)) {
           diagnostics.push({
             line: i + 1,
@@ -167,9 +165,8 @@ export class PineStaticAnalyzer {
     line: number,
     col: number,
     endCol: number,
-    accessDesc: string,
   ): AnalyzerDiagnostic | null {
-    if (info.size === null) return null
+    if (info.size === null) {return null}
 
     if (idx < 0 && Math.abs(idx) > info.size) {
       return {
@@ -208,9 +205,9 @@ export class PineStaticAnalyzer {
         const method = match[1]
         const arrName = match[2]
         const info = this.arrays.get(arrName)
-        if (!info) continue
-        if (info.size !== null && info.size > 0) continue
-        if (this.hasSizeGuard(arrName, i)) continue
+        if (!info) {continue}
+        if (info.size !== null && info.size > 0) {continue}
+        if (this.hasSizeGuard(arrName, i)) {continue}
 
         diagnostics.push({
           line: i + 1,
@@ -224,11 +221,11 @@ export class PineStaticAnalyzer {
       while ((match = methodPattern.exec(line)) !== null) {
         const arrName = match[1]
         const method = match[2]
-        if (arrName === 'array') continue
+        if (arrName === 'array') {continue}
         const info = this.arrays.get(arrName)
-        if (!info) continue
-        if (info.size !== null && info.size > 0) continue
-        if (this.hasSizeGuard(arrName, i)) continue
+        if (!info) {continue}
+        if (info.size !== null && info.size > 0) {continue}
+        if (this.hasSizeGuard(arrName, i)) {continue}
 
         diagnostics.push({
           line: i + 1,
@@ -266,7 +263,7 @@ export class PineStaticAnalyzer {
 
       // for i = 0 to N  (classic for loop)
       const forMatch = line.match(/for\s+(\w+)\s*=\s*0\s+to\s+(\S+)/)
-      if (!forMatch) continue
+      if (!forMatch) {continue}
 
       const loopVar = forMatch[1]
       const bound = forMatch[2]
@@ -277,7 +274,7 @@ export class PineStaticAnalyzer {
       for (const access of bodyArrayAccesses) {
         const { arrName, lineIdx } = access
         const info = this.arrays.get(arrName)
-        if (!info) continue
+        if (!info) {continue}
 
         // Check if bound is derived from this array's size
         const isSizeBound =
@@ -335,11 +332,11 @@ export class PineStaticAnalyzer {
     for (let j = forLineIdx + 1; j < this.lines.length; j++) {
       const bodyLine = this.lines[j]
       const trimmed = bodyLine.trim()
-      if (trimmed === '') continue
+      if (trimmed === '') {continue}
 
       // Stop if we hit a line at same or lesser indentation (end of loop body)
       const indent = this.getIndent(bodyLine)
-      if (indent <= forLineIndent && trimmed !== '') break
+      if (indent <= forLineIndent && trimmed !== '') {break}
 
       // Check for array.get(arr, loopVar) or arr.get(loopVar)
       const funcAccess = new RegExp(`array\\.get\\(\\s*(\\w+)\\s*,\\s*${this.escapeRegex(loopVar)}\\s*\\)`)
@@ -382,7 +379,7 @@ export class PineStaticAnalyzer {
       }
     }
 
-    if (numericVars.size === 0) return diagnostics
+    if (numericVars.size === 0) {return diagnostics}
 
     for (let i = 0; i < this.lines.length; i++) {
       const line = this.lines[i]

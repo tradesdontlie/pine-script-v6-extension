@@ -4,7 +4,7 @@
 - **Extension Version**: 0.1.0
 - **VS Code Version**: ^1.93.0
 - **Test Date**: January 2025
-- **Test Files**: `test-v6-features.pine`, `functionality-test.pine`
+- **Test Files**: `examples/fixtures/test-v6-features.pine`, `examples/fixtures/functionality-test.pine`
 
 ## ✅ **WORKING FEATURES**
 
@@ -92,7 +92,7 @@ if array.size(myArray) > 0 and array.first(myArray) > 0
 When VS Code development window opens, test these features:
 
 ### Syntax Highlighting Test
-1. Open `functionality-test.pine`
+1. Open `examples/fixtures/functionality-test.pine`
 2. Verify `//@version=6` is highlighted
 3. Check `text.format_bold` and `text.format_italic` highlighting
 4. Confirm proper namespace highlighting (`math.`, `array.`, etc.)

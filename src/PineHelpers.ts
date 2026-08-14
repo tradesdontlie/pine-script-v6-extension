@@ -309,9 +309,9 @@ export class Helpers {
 
       return hasArgs
         ? syntax
-            .replace(/\(\s*/g, '(\n   ')
-            .replace(/(?<!map<[^,]+),\s*(?=[^\u2192]*\u2192)/g, ',\n   ')
-            .replace(/\s*\)\s*\u2192\s*/g, '\n) \u2192 ')
+          .replace(/\(\s*/g, '(\n   ')
+          .replace(/(?<!map<[^,]+),\s*(?=[^\u2192]*\u2192)/g, ',\n   ')
+          .replace(/\s*\)\s*\u2192\s*/g, '\n) \u2192 ')
         : syntax
     } catch (e) {
       console.error(e, 'modifySyntax')

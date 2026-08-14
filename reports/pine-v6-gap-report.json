@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-08-14T06:27:13.152Z",
+  "scorecard": {
+    "symbols": {
+      "total": 959,
+      "matched": 959,
+      "percentage": 100
+    },
+    "signatures": {
+      "total": 530,
+      "matched": 530,
+      "percentage": 100
+    },
+    "types": {
+      "total": 530,
+      "matched": 530,
+      "percentage": 100
+    },
+    "grammar": {
+      "total": 10,
+      "matched": 10,
+      "percentage": 100
+    },
+    "parser": {
+      "total": 10,
+      "matched": 10,
+      "percentage": 100
+    },
+    "completions": {
+      "total": 959,
+      "matched": 959,
+      "percentage": 100
+    },
+    "hover": {
+      "total": 959,
+      "matched": 959,
+      "percentage": 100
+    },
+    "staticAnalysis": {
+      "total": 100,
+      "matched": 85,
+      "percentage": 85
+    },
+    "overallPercentage": 100,
+    "criticalGapsCount": 0
+  },
+  "totalGaps": 0,
+  "criticalGapsCount": 0,
+  "gaps": []
+}

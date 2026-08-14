@@ -1,0 +1,8 @@
+//@version=6
+indicator("Multiline String Test")
+string s = """
+line one
+line two
+line three
+"""
+plot(str.length(s))

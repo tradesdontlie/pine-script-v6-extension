@@ -10,19 +10,6 @@ export class PineRequest {
   private pineUrl: string = 'https://pine-facade.tradingview.com/pine-facade/'
   /** Holds a list of saved requests */
   private savedList: any[] = []
-  /** Holds the fetch function for making requests */
-  private fetch: any = undefined
-
-  /**
-   * Dynamically imports node-fetch and assigns it to this.fetch.
-   * This method ensures compatibility with ES Modules.
-   */
-  private async loadFetchModule() {
-    if (!this.fetch) {
-      const fetchModule = await import('node-fetch')
-      this.fetch = fetchModule.default
-    }
-  }
 
   /**
    * Get request headers with optional session ID.
@@ -48,19 +35,17 @@ export class PineRequest {
    * @returns {Promise<any>} A promise that resolves to the response from the request.
    */
   async request(method: string, url: string): Promise<any> {
-    // Ensure node-fetch is loaded
-    await this.loadFetchModule()
     // Initialize a new URLSearchParams object
     const formData = new URLSearchParams()
     // Get the text of the active document
-    let body = VSCode.Text
+    const body = VSCode.Text
     // Define the options for the request
     const requestOptions: {
       method: string
       headers: any
       body?: string | URLSearchParams
     } = {
-      method: method,
+      method,
       headers: await this.getHeaders(),
     }
     // If the method is POST, append the body to the form data and set the body of the request options
@@ -70,20 +55,22 @@ export class PineRequest {
     }
 
     try {
-      // Make the request
-      const response = await this.fetch(url, requestOptions)
+      // Make the request using native fetch
+      const response = await fetch(url, requestOptions)
       // If the response is not ok, throw an error
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`)
       }
       // If the response is defined, return the JSON from the response
       if (response !== undefined) {
-        return response.json()
+        return await response.json()
       }
+      // Explicitly return null if no response
+      return null
     } catch (error) {
       // Log any errors
       console.error('Error in request:', error)
-      return
+      return null
     }
   }
 
