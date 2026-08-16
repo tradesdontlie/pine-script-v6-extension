@@ -1,0 +1,4 @@
+//@version=6
+indicator("Footprint Conformance")
+footprint fp = request.footprint(syminfo.tickerid, "1D")
+volume_row vr = na

@@ -286,8 +286,8 @@ export class PineParser {
 
             let resolvedFieldType = genericTypes
               ? `${fieldMatch[1] /* array|matrix|map */}<${genericType1 || ''}${
-                  genericType1 && genericType2 ? ',' : ''
-                }${genericType2 || ''}>`
+                genericType1 && genericType2 ? ',' : ''
+              }${genericType2 || ''}>`
               : fieldType + (isArray || '')
 
             const fieldValue =
@@ -326,7 +326,7 @@ export class PineParser {
     const parsedEnums: any[] = []
     for (const doc of documents) {
       const { script, alias } = doc
-      if (typeof script !== 'string') continue
+      if (typeof script !== 'string') {continue}
       const enumMatches = script.matchAll(this.enumPattern)
       for (const enumMatch of enumMatches) {
         const { exportKeyword, enumName, fieldsBlock } = enumMatch.groups!
@@ -343,7 +343,7 @@ export class PineParser {
           for (const fieldMatch of fieldMatches) {
             const { fieldName, fieldTitle } = fieldMatch.groups!
             const field: any = { name: fieldName }
-            if (fieldTitle) field.title = fieldTitle
+            if (fieldTitle) {field.title = fieldTitle}
             enumBuild.fields.push(field)
           }
         }

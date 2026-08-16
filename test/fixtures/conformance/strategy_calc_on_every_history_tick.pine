@@ -1,0 +1,4 @@
+//@version=6
+strategy("History Tick Strategy", calc_on_every_history_tick = true)
+if ta.crossover(ta.sma(close, 14), ta.sma(close, 28))
+    strategy.entry("Long", strategy.long)

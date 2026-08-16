@@ -1,0 +1,10 @@
+//@version=6
+indicator("UDT Sort Test")
+type OrderBlock
+    float price
+    int timestamp
+    string kind
+
+var array<OrderBlock> blocks = array.new<OrderBlock>()
+array.sort(blocks, sort_field = "price")
+array.sort_indices(blocks, sort_field = 0)

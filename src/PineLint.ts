@@ -86,7 +86,8 @@ export class PineLint {
       // Run local static analysis (instant, no API call)
       const docText = VSCode.Text ?? ''
       if (docText) {
-        const analyzer = new PineStaticAnalyzer(docText)
+        const docsMap = Class.PineDocsManager.getMap('functions', 'completionFunctions')
+        const analyzer = new PineStaticAnalyzer(docText, docsMap)
         const localDiags = analyzer.analyze()
         PineLint.applyLocalDiagnostics(localDiags)
       }
@@ -101,7 +102,7 @@ export class PineLint {
   }
 
   static applyLocalDiagnostics(localDiags: import('./PineStaticAnalyzer').AnalyzerDiagnostic[]): void {
-    if (localDiags.length === 0) return
+    if (localDiags.length === 0) {return}
     const vsDiags = localDiags.map(d => {
       const range = new vscode.Range(d.line - 1, d.column - 1, d.line - 1, d.endColumn - 1)
       const severity = d.severity === 'error'
@@ -151,9 +152,9 @@ export class PineLint {
         const range = new vscode.Range(start.line - 1, start.column - 1, end.line - 1, end.column)
 
         let severity: vscode.DiagnosticSeverity
-        if (i == 1 || i == 3) {
+        if (i === 1 || i === 3) {
           severity = vscode.DiagnosticSeverity.Error
-        } else if (i == 2 || i == 4) {
+        } else if (i === 2 || i === 4) {
           severity = vscode.DiagnosticSeverity.Warning
         } else {
           severity = vscode.DiagnosticSeverity.Information
@@ -176,14 +177,17 @@ export class PineLint {
    * @param response - The response from the linting process.
    */
   static async handleResponse(response: any): Promise<void> {
-    if (VSCode.ActivePineEditor) {
-      PineLint.updateDiagnostics(
-        response.result?.errors2 || response.reason2?.errors || [],
-        response.result?.warnings2 || response.reason2?.warnings || [],
-        response.result?.errors || [],
-        response.result?.warnings || [],
-      )
+    if (!VSCode.ActivePineEditor || !response) {
+      return
     }
+    
+    // Safely extract diagnostic arrays with proper null checking
+    const errors2 = response.result?.errors2 ?? []
+    const warnings2 = response.result?.warnings2 ?? response.reason2?.warnings ?? []
+    const errors = response.result?.errors ?? []
+    const warnings = response.result?.warnings ?? []
+    
+    PineLint.updateDiagnostics(errors2, warnings2, errors, warnings)
   }
 
   /**

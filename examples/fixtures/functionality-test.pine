@@ -12,7 +12,7 @@ indicator("Extension Functionality Test", overlay=true)
 // @returns Test return value
 
 // Test 3: Import statements
-import TradingView/Patterns/1 as p
+import TradingView/ta/7 as p
 
 // Test 4: Function declarations
 testFunction(int param1, float param2) =>
@@ -38,16 +38,14 @@ myMap = map.new<string, float>()
 // Test 7: Dynamic requests (v6 feature)
 dynamicSymbol = "AAPL"
 dynamicTimeframe = "1D"
-price = request.security(dynamicSymbol, dynamicTimeframe, close)
-
 // Test 8: Text formatting (v6 features)
 if barstate.islast
-    label.new(bar_index, high, "Bold", 
-              text_size = 16,
+    label.new(bar_index, high, "Bold",
+              size = size.large,
               text_formatting = text.format_bold)
-    
-    label.new(bar_index, low, "Italic", 
-              text_size = 14,
+
+    label.new(bar_index, low, "Italic",
+              size = size.normal,
               text_formatting = text.format_italic)
 
 // Test 9: Negative array indices (v6 feature)
@@ -111,4 +109,4 @@ stringConverted = str.tostring(close)
 // line.new(
 // request.security(
 
-plot(close, title="Close Price", color=color.blue) 
+plot(close, title="Close Price", color=color.blue)

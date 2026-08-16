@@ -8,31 +8,31 @@ A VS Code / Cursor extension for [TradingView Pine Script v6](https://www.tradin
 
 ### Option 1: Download and double-click
 
-1. Download **[`INSTALL-ME.vsix`](./INSTALL-ME.vsix)** from this repo
+1. Download **[`pinescriptv6.vsix`](./pinescriptv6.vsix)** from this repo
 2. Open VS Code or Cursor
 3. `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac) > **"Extensions: Install from VSIX..."**
-4. Select the downloaded `INSTALL-ME.vsix` file
+4. Select the downloaded `pinescriptv6.vsix` file
 5. Reload the editor
 
 ### Option 2: Command line
 
 ```bash
 # VS Code
-code --install-extension INSTALL-ME.vsix
+code --install-extension pinescriptv6.vsix
 
 # Cursor
-cursor --install-extension INSTALL-ME.vsix
+cursor --install-extension pinescriptv6.vsix
 ```
 
 ### Option 3: Build from source
 
 ```bash
-git clone https://github.com/TradesDontLie/pinescript-v6-language-server.git
-cd pinescript-v6-language-server
+git clone https://github.com/shubhamtaywade82/pine-script-v6-extension.git
+cd pine-script-v6-extension
 pnpm install
 pnpm run compile
-npx @vscode/vsce package --no-dependencies -o INSTALL-ME.vsix
-code --install-extension INSTALL-ME.vsix
+pnpm run vsce-package
+code --install-extension pinescriptv6.vsix
 ```
 
 ---
@@ -44,7 +44,7 @@ code --install-extension INSTALL-ME.vsix
 Catches errors **instantly** without calling the TradingView API:
 
 | Detection | Severity | Example |
-|-----------|----------|---------|
+| --- | --- | --- |
 | **Array index out of bounds** | Error | `a = array.from(1,2,3)` then `array.get(a, 5)` |
 | **Negative index out of bounds** | Error | `array.get(a, -4)` on a size-3 array |
 | **Off-by-one with array.size()** | Error | `array.get(a, array.size(a))` — should be `size - 1` |
@@ -111,9 +111,9 @@ In addition to local static analysis, the extension sends your code to TradingVi
 
 ## Repo Structure
 
-```
+```text
 .
-├── INSTALL-ME.vsix                    <-- GRAB THIS TO INSTALL
+├── pinescriptv6.vsix                  <-- GRAB THIS TO INSTALL
 ├── README.md
 ├── package.json                        Extension manifest
 ├── src/
@@ -173,7 +173,7 @@ pnpm run compile
 pnpm run start
 
 # Package VSIX
-npx @vscode/vsce package --no-dependencies -o INSTALL-ME.vsix
+pnpm run vsce-package
 ```
 
 ---
@@ -181,7 +181,7 @@ npx @vscode/vsce package --no-dependencies -o INSTALL-ME.vsix
 ## Supported File Types
 
 | Extension | Language ID |
-|-----------|------------|
+| --- | --- |
 | `.pine` | pine |
 | `.ps` | pine |
 | `.pinescript` | pine |

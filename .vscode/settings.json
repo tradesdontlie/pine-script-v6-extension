@@ -1,0 +1,34 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": [
+    "typescript",
+    "typescriptreact"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "[pine]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true
+  },
+  "[typescript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/out": true,
+    "**/dist": true,
+    "**/*.vsix": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/out/**": true,
+    "**/dist/**": true
+  }
+}

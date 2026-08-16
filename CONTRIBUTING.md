@@ -1,9 +1,9 @@
-# Contributing to Pine-Script-v5-VS-Code
+# Contributing to Pine Script v6 VS Code Extension
 
-Thank you for your interest in contributing to Pine-Script-v5-VS-Code. Your contributions are highly appreciated!
+Thank you for your interest in contributing to Pine Script v6 VS Code Extension. Your contributions are highly appreciated!
 
-## Repo Documentation
-https://ffriz.github.io/Pine-Script-v5-VS-Code/
+## Repository
+https://github.com/shubhamtaywade82/pine-script-v6-extension
 
 ## Code of Conduct
 
@@ -131,4 +131,4 @@ Ensure your pull requests adhere to the following:
 - Include meaningful commit messages following Conventional Commits.
 - Reference related issues and pull requests.
 
-Your contributions help improve Pine-Script-v5-VS-Code for everyone!
+Your contributions help improve Pine Script v6 VS Code Extension for everyone!

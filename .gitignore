@@ -1,45 +1,20 @@
-# .gitignore
+# Node / Dependencies
+node_modules/
+.pnpm-store/
 
-# Ignore node_modules folder
-node_modules
+# Build outputs
+dist/
+out/
+*.vsix
 
-# Ignore all log files
+# Tests & Coverage
+coverage/
+.vscode-test/
 *.log
 
-# Ignore all .env files
-*.env
-
-# Ignore the .vscode folder
-.vscode
-
-# Ignore build output
-out
-
-# Ignore dist folder
-dist
-
-# Ignore npm debug logs
-npm-debug.log*
-
-# Ignore yarn debug logs
-yarn-debug.log*
-
-# Ignore yarn error logs
-yarn-error.log*
-
-# Ignore package-lock.json to avoid conflicts (optional)
-package-lock.json
-
-# Ignore .DS_Store on macOS
+# Environment & Local Configuration
+.env
+.env.local
 .DS_Store
-
-# Pine Script folder
-Pine Scripts
-PineScripts
-
-# .vsix (keep INSTALL-ME.vsix, ignore build artifacts)
-pinescriptv5.vsix
-pinescript-v6-vscode-*.vsix
-
-# Logs
-logs/
+Thumbs.db
+.history/

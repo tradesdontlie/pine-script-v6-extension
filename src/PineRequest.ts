@@ -80,10 +80,12 @@ export class PineRequest {
       if (response !== undefined) {
         return response.json()
       }
+      // Explicitly return null if no response
+      return null
     } catch (error) {
       // Log any errors
       console.error('Error in request:', error)
-      return
+      return null
     }
   }
 

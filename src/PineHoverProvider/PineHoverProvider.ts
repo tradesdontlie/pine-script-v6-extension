@@ -60,7 +60,7 @@ export class PineHoverProvider implements vscode.HoverProvider {
       return this.annotationHover()
     }
 
-    return await this.getFirstTruthyHover();
+    return this.getFirstTruthyHover();
   }
 
   /** This function produces an array of hover functions.

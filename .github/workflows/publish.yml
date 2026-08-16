@@ -3,34 +3,337 @@ name: Publish VS Code Extension
 on:
   release:
     types: [published]
-  workflow_dispatch:  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      publish_marketplace:
+        description: 'Publish to Visual Studio Marketplace'
+        required: true
+        default: 'false'
+        type: boolean
+      publish_openvsx:
+        description: 'Publish to Open VSX Registry'
+        required: true
+        default: 'false'
+        type: boolean
 
 jobs:
-  publish:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm run lint
+
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Run TypeScript Type Check
+        run: pnpm exec tsc --noEmit -p tsconfig.json
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, type-check]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build Extension
+        run: pnpm run compile
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: extension-build
+          path: dist/
+          retention-days: 7
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-build
+          path: dist/
+
+      - name: Run Tests
+        run: pnpm run test
+
+  package:
+    name: Package Extension
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-build
+          path: dist/
 
       - name: Package extension
-        run: npm run vsce-package
+        run: pnpm run vsce-package
 
-      - name: Publish to Visual Studio Marketplace
-        if: github.event_name == 'release'
-        run: npx vsce publish --packagePath *.vsix
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
-
-      - name: Upload VSIX as artifact
+      - name: Upload VSIX artifact
         uses: actions/upload-artifact@v4
         with:
           name: extension-vsix
-          path: "*.vsix" 
+          path: "*.vsix"
+          retention-days: 30
+
+  publish-marketplace:
+    name: Publish to VS Marketplace
+    runs-on: ubuntu-latest
+    needs: [package]
+    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.publish_marketplace)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-vsix
+
+      - name: Publish to Visual Studio Marketplace
+        run: npx @vscode/vsce publish --packagePath *.vsix
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+  publish-openvsx:
+    name: Publish to Open VSX
+    runs-on: ubuntu-latest
+    needs: [package]
+    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.publish_openvsx)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-vsix
+
+      - name: Publish to Open VSX Registry
+        run: npx ovsx publish --packagePath *.vsix
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}

@@ -1,0 +1,60 @@
+{
+  "version": "2.0.0",
+  "tasks": {
+    "npm: compile": {
+      "type": "npm",
+      "script": "compile",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "never"
+      }
+    },
+    "npm: lint": {
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": [
+        "$eslint-stylish"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    },
+    "npm: test": {
+      "type": "npm",
+      "script": "test",
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    },
+    "npm: watch": {
+      "type": "npm",
+      "script": "watch-tests",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "isBackground": true,
+      "presentation": {
+        "reveal": "never"
+      }
+    },
+    "package": {
+      "label": "Package Extension",
+      "type": "shell",
+      "command": "pnpm run vsce-package",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "problemMatcher": []
+    }
+  }
+}
